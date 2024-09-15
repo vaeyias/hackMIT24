@@ -11,8 +11,25 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+          'redBrown': '#c59199',
+          'darkBlue': '#0C163B'
+
+
       },
+      spacing:{
+        '15%':"15%",
+        "30%":"30%",
+        "5%":"5%",
+        "7%":"7%",
+        "2%":"2%",
+        "1%":"1%",
+        "3%":"3%",
+        "0%": "10%",
+        "10%": "10%",
+        "40%": "40%",
+
     },
+  },
   },
   plugins: [],
 };
