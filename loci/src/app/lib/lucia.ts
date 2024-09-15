@@ -1,3 +1,4 @@
+
 import { Lucia } from "lucia";
 import { Google } from "arctic";
 import { cache } from "react";
@@ -25,11 +26,6 @@ export const lucia = new Lucia(adapter, {
 		};
 	}
 });
-
-export async function getCurrentUser() {
-	'use server'
-	return (await validateRequest()).user
-}
 
 export const validateRequest = cache(
 	async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
@@ -73,22 +69,6 @@ export const google = new Google(
 	process.env.GOOGLE_CLIENT_ID!, process.env.GOOGLE_CLIENT_SECRET!,
 	process.env.DEPLOYMENT_URL+"/login/callback"
 );
-
-export async function logout(redirectAddress : string): Promise<ActionResult | void> {
-	"use server";
-	const { session } = await validateRequest();
-	if (!session) {
-		return {
-			error: "Unauthorized"
-		};
-	}
-
-	await lucia.invalidateSession(session.id);
-
-	const sessionCookie = lucia.createBlankSessionCookie();
-	cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-	return redirect(redirectAddress);
-}
 
 interface ActionResult {
 	error: string | null;

@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { OAuth2RequestError } from "arctic";
 import mongoose, { MongooseError } from "mongoose";
 import User from "../../../../model/user";
+import connect from "../../../../functions/connect";
 
 export async function GET(request: Request): Promise<Response> {
 	const url = new URL(request.url);
@@ -28,16 +29,19 @@ export async function GET(request: Request): Promise<Response> {
 		});
 		const googleUser: GoogleUser = await googleUserResponse.json();
 	try {
+        // connect to mongoose
+        await connect();
+
 		const existingUser : any = await User.findOne({"id": googleUser.sub}).exec();
 		
-		if (existingUser.length > 0) { //  REDIRECT AFTER SIGN IN
-			const session = await lucia.createSession(existingUser[0].id, {});
+		if (existingUser) { //  REDIRECT AFTER SIGN IN
+			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 			return new Response(null, {
 				status: 302,
 				headers: {
-					Location: "/"
+					Location: "/home"
 				}
 			});
 		}
@@ -60,13 +64,13 @@ export async function GET(request: Request): Promise<Response> {
 			});
 		}
 
-		const session = await lucia.createSession(googleUser.sub??"5", {});
+		const session = await lucia.createSession(googleUser.sub??"0", {});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return new Response(null, {
 			status: 302,
 			headers: {
-				Location: "/"
+				Location: "/home"
 			}
 		});
 	} catch (e : any) {
@@ -77,9 +81,7 @@ export async function GET(request: Request): Promise<Response> {
 				headers: {msg: e.message},
 			});
 		}
-        return new Response(JSON.stringify(e) +" google user: "+ JSON.stringify(googleUser) + " sub " + googleUser.sub
-		+ "found user " + JSON.stringify(await User.findOne({"id": googleUser.sub}).exec()) + " length " + 
-		(await User.findOne({"id": googleUser.sub}).exec()).length, {
+        return new Response(null, {
 			status: 505,
 			statusText: e, headers: {msg: e}
 		});

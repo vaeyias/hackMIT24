@@ -1,6 +1,5 @@
-const { mongodbkey } = require('./config.json');
+'use server';
+import mongoose from "mongoose";
 
-const mongoose = require('mongoose');
-
-const connect = async function(){await mongoose.connect("mongodb+srv://jocelynz4890:" + mongodbkey + "@loci.xmsie.mongodb.net/");}
-module.exports = { connect };
+const connect = async function(){await mongoose.connect("mongodb+srv://jocelynz4890:" + process.env.mongodbkey + "@loci.xmsie.mongodb.net/");}
+export default connect;

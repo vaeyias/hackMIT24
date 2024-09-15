@@ -1,8 +1,7 @@
-'use client';
 import Link from "next/link";
 import 'animate.css';
 
-export function Header(){
+export function HeaderLoggedOut(){
 
     return (
         <span className = "sticky flex items-center w-full gap-10 mix-blend-difference">
@@ -10,7 +9,7 @@ export function Header(){
                 Home
             </Link>
             <Link href="/login" className="animate__animated animate__slideInDown text-10xl duration-300">
-                Log In 
+                Log In
             </Link>
         </span>
     )

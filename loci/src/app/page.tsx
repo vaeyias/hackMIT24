@@ -1,13 +1,19 @@
-import Image from "next/image";
-import { Header } from "../../components/Header";
+
+import { isSignedIn } from "../../functions/isSignedIn";
+import { HeaderLoggedOut } from "../../components/HeaderLoggedOut";
+import { redirect } from 'next/navigation';
+import { logout } from "../../functions/logout";
 
 export default function Home() {
+  logout('/');
+  isSignedIn().then(bool => bool ? redirect('/home') : console.log('not signed'));
+
   return (
-    <div>
-    {/* header component with home button and login */}
-    {/* if not signed in, home page has 3d interactive room model with gif of how it works + information with scroll effects using gsap 
-        if signed in, flex grid of rooms with staggering animation*/}
-      
-    </div>
+    <>
+      <HeaderLoggedOut/>
+      <div>
+        log in bruh!!!!
+      </div>
+    </>
   );
 }
