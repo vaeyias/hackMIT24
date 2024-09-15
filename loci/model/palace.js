@@ -6,7 +6,7 @@ const palaceSchema = new Schema({
     ObjectId: Schema.Types.ObjectId,
     icon: String,
     items: [
-        {id: String, x: 0, y: 0, z: 0, visibility:false},
+        {id: String, name:String, px: 0, py: 0, pz: 0, visibility:false, rx:0, ry:0, rz:0, text:String},
     ] 
 });
   
