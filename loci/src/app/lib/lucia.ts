@@ -4,12 +4,13 @@ import { cache } from "react";
 import type { Session, User } from "lucia";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-// import { NeonHTTPAdapter } from "@lucia-auth/adapter-postgresql";
+import { MongodbAdapter } from "@lucia-auth/adapter-mongodb";
+import mongoose from "mongoose";
 
-// const adapter = new NeonHTTPAdapter(db, {
-// 	user: "users",
-// 	session: "session"
-// });
+const adapter = new MongodbAdapter(
+	mongoose.connection.collection("Session") as any,
+	mongoose.connection.collection("User") as any
+);
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
@@ -20,17 +21,15 @@ export const lucia = new Lucia(adapter, {
 	},
 	getUserAttributes: (attributes) => {
 		return {
-			// attributes has the type of DatabaseUserAttributes
 			googleId: attributes.google_id,
-			picture: attributes.picture
 		};
 	}
 });
 
-// export async function getCurrentUser() {
-// 	'use server'
-// 	return (await validateRequest()).user
-// }
+export async function getCurrentUser() {
+	'use server'
+	return (await validateRequest()).user
+}
 
 export const validateRequest = cache(
 	async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
@@ -68,7 +67,6 @@ declare module "lucia" {
 
 interface DatabaseUserAttributes {
 	google_id: number;
-	picture: string;
 }
 
 export const google = new Google(
