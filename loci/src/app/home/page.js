@@ -75,8 +75,17 @@ export default function Home(props) {
           <AddCard setName={setName}
           />
 
-          {insertPalaceName && <div className='absolute flex justify-center items-center w-full h-full'>
-          <form className="p-5 w-1/2 h-1/2 flex items-center bg-redBrown rounded-xl justify-center" onSubmit={handleSubmit(onSubmit)}>
+
+
+      </div>
+
+    </div>
+
+    {insertPalaceName && <div className='absolute top-0 bg-black bg-opacity-40 flex justify-center items-center w-full h-full'>
+          <form className="p-10 w-1/2 h-1/3 flex-col items-center bg-black rounded-2xl justify-center" onSubmit={handleSubmit(onSubmit)}>
+          <div className='text-5xl m-5 flex justify-center'>
+            Create a New Memory Palace!
+          </div>
           <input
             className="w-full rounded-xl p-2 text-5xl text-black focus:cursor-text focus:border-white"
             placeholder="Enter Palace Name"
@@ -91,10 +100,6 @@ export default function Home(props) {
 
           </div>}
 
-
-      </div>
-
-    </div>
     </div>
 
 

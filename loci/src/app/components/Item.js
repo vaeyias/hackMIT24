@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react';
 
 export default function Card(props) {
-    const [isInUse, setIsInUse]=useState(props.isInUse);
+    const [isInUse, setIsInUse]=useState(props.inUse);
 
     useEffect(()=>{
-        setIsInUse(props.isInUse)
+        setIsInUse(props.inUse)
 
     },[])
 
     useEffect(()=>{
-        console.log("IN USE",isInUse)
+        console.log("IN USE",props.name,props.id, isInUse)
 
     },[isInUse])
 
     return (
-        <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 h-full sm:h-1/4 md:h-1/4 lg:h-1/4 xl:h-1/6 m-4 rounded-3xl"
+        <div className="ml-10 mb-20 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 h-full sm:h-1/4 md:h-1/4 lg:h-1/4 xl:h-1/6 m-4 rounded-3xl"
         onClick={() =>
             {
                 if (!isInUse){
-                    console.log("SDJFHSJDK",props.itemID)
-                    props.insertItem({itemID: props.itemID,name:props.name})
+                    console.log("SDJFHSJDK",props.id)
+                    props.insertItem({id: props.id,name:props.name})
                 }
                 setIsInUse(true)
         }}>

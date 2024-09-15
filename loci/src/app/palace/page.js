@@ -12,14 +12,16 @@ export default function Palace() {
     const spline = useRef();
 
 
-    const [items, setItems]= useState([]);
-    const [catalogItems, setCatalogItems]= useState([{name:"table",itemID:"dc3ca31e-f156-4d3d-9ec9-76ac6afe92a4",inUse:false},{name:"chair",itemID:2,inUse:false},{name:"shelf",itemID:3,inUse:false}]);
+    const [catalogItems, setCatalogItems]= useState([{name:"table",id:"05e1d7a5-cc07-495f-97e6-90d1958818c5",visibility:false}])
+    const [items, setItems]= useState([{name:"table",id:"05e1d7a5-cc07-495f-97e6-90d1958818c5",visibility:false},{name:"chair",id:2,visibility:false},{name:"shelf",id:3,visibility:false}]);
     const [showCatalog,setShowCatalog]=useState(false);
+    const [splineUpdated, setSplineUpdated]=useState(false);
 
 
     let isMouseDown=false;
     let clickStartTime=0;
     const timeoutRef = useRef(null);
+
 
 
 
@@ -29,8 +31,24 @@ export default function Palace() {
 
     const onLoad=(splineApp)=>{
         spline.current=splineApp
+        splineApp.setZoom(1)
         console.log("FIRST",spline,spline.current)
-        splineApp.setZoom(0.05)
+        if (spline.current){
+          if(spline.current._data){
+            console.log("BFSDHSDJKFSJKDLF",spline.current._data.scene.objects[0].children);
+            setCatalogItems((spline.current._data.scene.objects[0].children).map(child =>({
+              id:child.id, name:child.data.name, px:child.data.position[0],py:child.data.position[1],pz:child.data.position[2],visibility:child.data.visible,rx:child.data.rotation[0],ry:child.data.rotation[1],rz:child.data.rotation[2],text:""
+            }
+
+          )
+
+            ))
+
+
+          }
+
+        }
+
     }
 
     const onSave=()=>{
@@ -42,8 +60,6 @@ export default function Palace() {
               console.log(item)
             ),
           )
-
-
 
     }
 
@@ -99,18 +115,23 @@ export default function Palace() {
 
     // INSERT ITEM IN ITEMS VARIABLE AND UPDATE VISIBILITY
     const insertItem = (newItem)=>{
+        console.log(
+          "NEW ITEM",newItem
+        )
         setItems(prevItems =>[...prevItems,newItem])
-        console.log("ID",newItem.itemID)
+        console.log("ID",newItem.id)
 
 
         setCatalogItems(prevCatalogItems =>
             prevCatalogItems.map(item =>
-              item.itemID === newItem.itemID ? { ...item, inUse: true } : item
+              item.id === newItem.id ? { ...item, visibility: true } : item
             )
           );
-        let newObj=spline.current.findObjectById(newItem.itemID);
-
-        newObj.visible=true;
+        let newObj=spline.current.findObjectById(newItem.id);
+        console.log(
+          "NEW OBJ",spline.current._scene.activePage.children
+        )
+        // newObj.visible=true;
 
     }
 
@@ -121,14 +142,14 @@ export default function Palace() {
         // adds item back to catalog
         setCatalogItems(prevCatalogItems =>
             prevCatalogItems.map(item =>
-              item.itemID === deletedItem.itemID ? { ...item, inUse: false } : item
+              item.id === deletedItem.id ? { ...item, visibility: false } : item
             )
           );
 
         // delete item from visible item list
         setItems(prevItems =>
         prevItems.map(item =>
-            item.itemID != newItem.itemID && item
+            item.id != newItem.id && item
         )
         );
 
@@ -136,10 +157,10 @@ export default function Palace() {
 
         setCatalogItems(prevCatalogItems =>
             prevCatalogItems.map(item =>
-              item.itemID === newItem.itemID ? { ...item, inUse: true } : item
+              item.id === newItem.id ? { ...item, visibility: true } : item
             )
           );
-        let newObj=spline.current.findObjectById(newItem.itemID);
+        let newObj=spline.current.findObjectById(newItem.id);
 
         newObj.visible=true;
 
@@ -151,31 +172,32 @@ export default function Palace() {
         {/* ADD NAV BAR COMPONTENT */}
 
         <div className='h-full w-full'>
+        {!showCatalog && <div className="absolute flex items-center text-2xl justify-center bottom-0 right-0 w-1/12 h-full text-white bg-white z-20 hover:cursor-pointer hover:outline outline-white" onClick={()=>setShowCatalog(!showCatalog)}></div>}
 
 
-            <Spline className="z-10" scene="https://prod.spline.design/wsJfsBTQo7cxhBLM/scene.splinecode" onLoad={onLoad} onSplineMouseDown={onSplineMouseDown} onSplineMouseUp={onSplineMouseUp}/>
+            <Spline className="z-10" scene="https://prod.spline.design/Vm9O1npHiqbOs5Jl/scene.splinecode" onLoad={onLoad} onSplineMouseDown={onSplineMouseDown} onSplineMouseUp={onSplineMouseUp}/>
             <div className=" absolute flex m-2 items-center text-2xl justify-center top-0 left-0 w-10% h-10% text-white shadow-lg shadow-gray-400 rounded-3xl bg-redBrown z-40 hover:cursor-pointer hover:outline outline-white" onClick={onSave}>
                 Save
             </div>
             <div className=''>
-            {showCatalog && <div className="pt-7% absolute flex m-3 text-2xl bottom-0 right-0 w-30% h-full text-white shadow-lg shadow-gray-400 rounded-3xl bg-redBrown z-40 hover:cursor-pointer hover:outline outline-white">
+            {showCatalog && <div className="pt-7% absolute scroll-auto flex flex-wrap text-2xl bottom-0 right-0 w-30% overflow-scroll h-full text-white shadow-lg shadow-gray-400 rounded-l-3xl bg-redBrown z-40 hover:cursor-pointer hover:outline outline-white">
             {!showPopup ? catalogItems.map(
             (
               catalogItem,
             ) => (
               <Item
                 name={catalogItem.name}
-                itemID={catalogItem.itemID}
-                isInUse={catalogItem.inUse}
+                id={catalogItem.id}
+                inUse={catalogItem.visibility}
                 insertItem={insertItem}
-                key={catalogItem.itemID}
+                key={catalogItem.id}
               />
             ),
           ): <MemoryCard text={popupText} closePopup={closePopup}/>}
                 </div>}
 
 
-            {!showCatalog && <div className="absolute flex m-3 items-center text-2xl justify-center bottom-0 right-0 w-30% h-full text-white rounded-3xl bg-white z-40 hover:cursor-pointer hover:outline outline-white" onClick={()=>setShowCatalog(!showCatalog)}></div>}
+
 
 
                 <div className="absolute flex m-2 items-center text-2xl justify-center top-0 right-0 mr-6 w-fit h-fit p-6 text-white shadow-lg shadow-gray-500 rounded-3xl bg-red-300 z-50 hover:cursor-pointer hover:outline outline-white" onClick={()=>setShowCatalog(!showCatalog)}>
