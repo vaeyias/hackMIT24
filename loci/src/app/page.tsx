@@ -1,5 +1,5 @@
 import { isSignedIn } from "../../functions/isSignedIn";
-import { HeaderLoggedOut } from "./components/HeaderLoggedOut";
+import { HeaderLoggedOut } from "../../components/HeaderLoggedOut";
 import { redirect } from "next/navigation";
 import { logout } from "../../functions/logout";
 

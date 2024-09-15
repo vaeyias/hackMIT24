@@ -1,13 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import Card from "./Card.js";
-import AddCard from "./AddCard.js"
+import Card from "../../../components/Card.js";
+import AddCard from "../../../components/AddCard.js"
 import { useForm } from "react-hook-form";
-import makePalace from '../../../functions/makePalace.js';
 
 
 
-export default function Gallery(props) {
+export default function Home(props) {
     const [palaces, setPalaces] = useState([]);
     const [insertPalaceName, setInsertPalaceName] = useState(false);
 
@@ -27,10 +26,9 @@ export default function Gallery(props) {
 
         // name: data.name (palace name),
         // userID: props.userID,
-        makePalace (data.name)
-        console.log("form",data.name)
-        resetField("name");
-        // to-do REDIRECT TO NEW PALACE
+      console.log("form",data.name)
+      resetField("name");
+      // to-do REDIRECT TO NEW PALACE
     };
 
     useEffect(()=>{

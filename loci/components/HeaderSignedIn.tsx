@@ -1,6 +1,6 @@
 import Link from "next/link";
 import "animate.css";
-import { logout } from "../../../functions/logout";
+import { logout } from "../functions/logout";
 
 export function HeaderSignedIn() {
   return (
